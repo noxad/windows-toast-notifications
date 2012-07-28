@@ -37,7 +37,7 @@ How to Use
 4. Create a toast notification form object in your project's code and call Show() to display it
 
     ```csharp
-    Notification toastNotification = new Notification(textBoxTitle.Text, textBoxBody.Text, duration, animationMethod, animationDirection);
+    Notification toastNotification = new Notification(title, body, duration, animationMethod, animationDirection);
     toastNotification.Show();
     ```
 
