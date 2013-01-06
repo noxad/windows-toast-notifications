@@ -44,5 +44,5 @@ How to Use
 Attribution
 ---------------------
 
-Code originally retrieved from URL below. No license information supplied. 
+Core code originally retrieved from URL below. No license information supplied. 
 * http://www.vbforums.com/showthread.php?t=547778
