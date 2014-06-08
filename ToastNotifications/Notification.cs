@@ -11,9 +11,9 @@ namespace ToastNotifications
     public partial class Notification : Form
     {
         private static List<Notification> openNotifications = new List<Notification>();
-        private bool allowFocus = false;
-        private FormAnimator animator;
-        private IntPtr currentForegroundWindow;
+        private bool _allowFocus;
+        private readonly FormAnimator _animator;
+        private IntPtr _currentForegroundWindow;
 
         /// <summary>
         /// 
@@ -32,11 +32,11 @@ namespace ToastNotifications
             else
                 duration = duration * 1000;
 
-            this.lifeTimer.Interval = duration;
-            this.labelTitle.Text = title;
-            this.labelBody.Text = body;
+            lifeTimer.Interval = duration;
+            labelTitle.Text = title;
+            labelBody.Text = body;
 
-            this.animator = new FormAnimator(this, animation, direction, 500);
+            _animator = new FormAnimator(this, animation, direction, 500);
 
             Region = Region.FromHrgn(NativeMethods.CreateRoundRectRgn(0, 0, Width - 5, Height - 5, 20, 20));
         }
@@ -52,7 +52,7 @@ namespace ToastNotifications
         public new void Show()
         {
             // Determine the current foreground window so it can be reactivated each time this form tries to get the focus
-            this.currentForegroundWindow = NativeMethods.GetForegroundWindow();
+            _currentForegroundWindow = NativeMethods.GetForegroundWindow();
 
             base.Show();
         }
@@ -64,93 +64,73 @@ namespace ToastNotifications
         private void Notification_Load(object sender, EventArgs e)
         {
             // Display the form just above the system tray.
-            this.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width - this.Width,
-                                      Screen.PrimaryScreen.WorkingArea.Height - this.Height);
+            Location = new Point(Screen.PrimaryScreen.WorkingArea.Width - Width,
+                                      Screen.PrimaryScreen.WorkingArea.Height - Height);
 
             // Move each open form upwards to make room for this one
-            foreach (Notification openForm in Notification.openNotifications)
+            foreach (Notification openForm in openNotifications)
             {
-                openForm.Top -= this.Height;
+                openForm.Top -= Height;
             }
 
-            Notification.openNotifications.Add(this);
-            this.lifeTimer.Start();
+            openNotifications.Add(this);
+            lifeTimer.Start();
         }
 
         private void Notification_Activated(object sender, EventArgs e)
         {
             // Prevent the form taking focus when it is initially shown
-            if (!this.allowFocus)
+            if (!_allowFocus)
             {
                 // Activate the window that previously had focus
-                NativeMethods.SetForegroundWindow(this.currentForegroundWindow);
+                NativeMethods.SetForegroundWindow(_currentForegroundWindow);
             }
         }
 
         private void Notification_Shown(object sender, EventArgs e)
         {
             // Once the animation has completed the form can receive focus
-            this.allowFocus = true;
+            _allowFocus = true;
 
             // Close the form by sliding down.
-            this.animator.Duration = 0;
-            this.animator.Direction = FormAnimator.AnimationDirection.Down;
+            _animator.Duration = 0;
+            _animator.Direction = FormAnimator.AnimationDirection.Down;
         }
 
         private void Notification_FormClosed(object sender, FormClosedEventArgs e)
         {
             // Move down any open forms above this one
-            foreach (Notification openForm in Notification.openNotifications)
+            foreach (Notification openForm in openNotifications)
             {
                 if (openForm == this)
                 {
                     // Remaining forms are below this one
                     break;
                 }
-                openForm.Top += this.Height;
+                openForm.Top += Height;
             }
 
-            Notification.openNotifications.Remove(this);
+            openNotifications.Remove(this);
         }
 
         private void lifeTimer_Tick(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void Notification_Click(object sender, EventArgs e)
         {
-            this.Close();
-        }
-
-        private void messageIcon_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        private void panelTitle_Click(object sender, EventArgs e)
-        {
-            this.Close();
+            Close();
         }
 
         private void labelTitle_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void labelRO_Click(object sender, EventArgs e)
         {
-            this.Close();
-        }
-
-        private void labelUpdated_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        private void panelIconBackground_Click(object sender, EventArgs e)
-        {
-            this.Close();
+            Close();
         }
 
         #endregion // Event Handlers

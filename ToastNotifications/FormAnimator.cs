@@ -52,7 +52,7 @@ namespace ToastNotifications
         /// <remarks>
         /// Horizontal and vertical directions can be combined to create diagonal animations
         /// </remarks>
-        [Flags()]
+        [Flags]
         public enum AnimationDirection
         {
             /// <summary>
@@ -80,15 +80,15 @@ namespace ToastNotifications
         /// <summary>
         /// Hide the form
         /// </summary>
-        private const int AW_HIDE = 0x10000;
+        private const int AwHide = 0x10000;
         /// <summary>
         /// Activate the form
         /// </summary>
-        private const int AW_ACTIVATE = 0x20000;
+        private const int AwActivate = 0x20000;
         /// <summary>
         /// The number of milliseconds over which the animation occurs if no value is specified
         /// </summary>
-        private const int DEFAULT_DURATION = 250;
+        private const int DefaultDuration = 250;
 
 #endregion // Constants
 
@@ -128,11 +128,11 @@ namespace ToastNotifications
         {
             get
             {
-                return this._method;
+                return _method;
             }
             set
             {
-                this._method = value;
+                _method = value;
             }
         }
 
@@ -149,11 +149,11 @@ namespace ToastNotifications
         {
             get
             {
-                return this._direction;
+                return _direction;
             }
             set
             {
-                this._direction = value;
+                _direction = value;
             }
         }
 
@@ -167,11 +167,11 @@ namespace ToastNotifications
         {
             get
             {
-                return this._duration;
+                return _duration;
             }
             set
             {
-                this._duration = value;
+                _duration = value;
             }
         }
 
@@ -185,7 +185,7 @@ namespace ToastNotifications
         {
             get
             {
-                return this._form;
+                return _form;
             }
         }
 
@@ -204,13 +204,13 @@ namespace ToastNotifications
         /// </remarks>
         public FormAnimator(Form form)
         {
-            this._form = form;
+            _form = form;
 
-            this._form.Load += new EventHandler(Form_Load);
-            this._form.VisibleChanged += new EventHandler(Form_VisibleChanged);
-            this._form.Closing += new CancelEventHandler(Form_Closing);
+            _form.Load += Form_Load;
+            _form.VisibleChanged += Form_VisibleChanged;
+            _form.Closing += Form_Closing;
 
-            this._duration = DEFAULT_DURATION;
+            _duration = DefaultDuration;
         }
 
         /// <summary>
@@ -230,8 +230,8 @@ namespace ToastNotifications
         /// </remarks>
         public FormAnimator(Form form, AnimationMethod method, int duration) : this(form)
         {
-            this._method = method;
-            this._duration = duration;
+            _method = method;
+            _duration = duration;
         }
 
         /// <summary>
@@ -255,7 +255,7 @@ namespace ToastNotifications
         /// </remarks>
         public FormAnimator(Form form, AnimationMethod method, AnimationDirection direction, int duration) : this(form, method, duration)
         {
-            this._direction = direction;
+            _direction = direction;
         }
 
 #endregion // Constructors
@@ -268,9 +268,9 @@ namespace ToastNotifications
         private void Form_Load(object sender, EventArgs e)
         {
             // MDI child forms do not support transparency so do not try to use the Fade method
-            if (this._form.MdiParent == null || this._method != AnimationMethod.Fade)
+            if (_form.MdiParent == null || _method != AnimationMethod.Fade)
             {
-                NativeMethods.AnimateWindow(this._form.Handle, this._duration, AW_ACTIVATE | (int)this._method | (int)this._direction);
+                NativeMethods.AnimateWindow(_form.Handle, _duration, AwActivate | (int)_method | (int)_direction);
             }
         }
 
@@ -280,20 +280,20 @@ namespace ToastNotifications
         private void Form_VisibleChanged(object sender, EventArgs e)
         {
             // Do not attempt to animate MDI child forms while showing or hiding as they do not behave as expected
-            if (this._form.MdiParent == null)
+            if (_form.MdiParent == null)
             {
-                int flags = (int)this._method | (int)this._direction;
+                int flags = (int)_method | (int)_direction;
 
-                if (this._form.Visible)
+                if (_form.Visible)
                 {
-                    flags = flags | AW_ACTIVATE;
+                    flags = flags | AwActivate;
                 }
                 else
                 {
-                    flags = flags | AW_HIDE;
+                    flags = flags | AwHide;
                 }
 
-                NativeMethods.AnimateWindow(this._form.Handle, this._duration, flags);
+                NativeMethods.AnimateWindow(_form.Handle, _duration, flags);
             }
         }
 
@@ -305,9 +305,9 @@ namespace ToastNotifications
             if (!e.Cancel)
             {
                 // MDI child forms do not support transparency so do not try to use the Fade method.
-                if (this._form.MdiParent == null || this._method != AnimationMethod.Fade)
+                if (_form.MdiParent == null || _method != AnimationMethod.Fade)
                 {
-                    NativeMethods.AnimateWindow(this._form.Handle, this._duration, AW_HIDE | (int)this._method | (int)this._direction);
+                    NativeMethods.AnimateWindow(_form.Handle, _duration, AwHide | (int)_method | (int)_direction);
                 }
             }
         }

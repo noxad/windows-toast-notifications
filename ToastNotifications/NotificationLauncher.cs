@@ -28,8 +28,8 @@ namespace ToastNotifications
             }
             comboBoxAnimationDirection.SelectedIndex = 3;
 
-            DirectoryInfo soundsFolder = new DirectoryInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sounds"));
-            foreach (FileInfo file in soundsFolder.GetFiles())
+            var soundsFolder = new DirectoryInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sounds"));
+            foreach (var file in soundsFolder.GetFiles())
             {
                 comboBoxSound.Items.Add(Path.GetFileNameWithoutExtension(file.FullName));
             }
@@ -48,7 +48,7 @@ namespace ToastNotifications
                 duration = -1;
             }
 
-            FormAnimator.AnimationMethod animationMethod = FormAnimator.AnimationMethod.Slide;
+            var animationMethod = FormAnimator.AnimationMethod.Slide;
             foreach (FormAnimator.AnimationMethod method in Enum.GetValues(typeof(FormAnimator.AnimationMethod)))
             {
                 if (string.Equals(method.ToString(), comboBoxAnimation.SelectedItem))
@@ -58,7 +58,7 @@ namespace ToastNotifications
                 }
             }
 
-            FormAnimator.AnimationDirection animationDirection = FormAnimator.AnimationDirection.Up;
+            var animationDirection = FormAnimator.AnimationDirection.Up;
             foreach (FormAnimator.AnimationDirection direction in Enum.GetValues(typeof(FormAnimator.AnimationDirection)))
             {
                 if (string.Equals(direction.ToString(), comboBoxAnimationDirection.SelectedItem))
@@ -68,7 +68,7 @@ namespace ToastNotifications
                 }
             }
 
-            Notification toastNotification = new Notification(textBoxTitle.Text, textBoxBody.Text, duration, animationMethod, animationDirection);
+            var toastNotification = new Notification(textBoxTitle.Text, textBoxBody.Text, duration, animationMethod, animationDirection);
             PlayNotificationSound(comboBoxSound.Text);
             toastNotification.Show();
         }
@@ -80,10 +80,10 @@ namespace ToastNotifications
 
         private static void PlayNotificationSound(string sound)
         {
-            string soundsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sounds");
-            string soundFile = Path.Combine(soundsFolder, sound + ".wav");
+            var soundsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sounds");
+            var soundFile = Path.Combine(soundsFolder, sound + ".wav");
 
-            using (System.Media.SoundPlayer player = new System.Media.SoundPlayer(soundFile))
+            using (var player = new System.Media.SoundPlayer(soundFile))
             {
                 player.Play();
             }
