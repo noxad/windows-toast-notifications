@@ -10,7 +10,7 @@ namespace ToastNotifications
 {
     public partial class Notification : Form
     {
-        private static List<Notification> openNotifications = new List<Notification>();
+        private static readonly List<Notification> OpenNotifications = new List<Notification>();
         private bool _allowFocus;
         private readonly FormAnimator _animator;
         private IntPtr _currentForegroundWindow;
@@ -68,12 +68,12 @@ namespace ToastNotifications
                                       Screen.PrimaryScreen.WorkingArea.Height - Height);
 
             // Move each open form upwards to make room for this one
-            foreach (Notification openForm in openNotifications)
+            foreach (Notification openForm in OpenNotifications)
             {
                 openForm.Top -= Height;
             }
 
-            openNotifications.Add(this);
+            OpenNotifications.Add(this);
             lifeTimer.Start();
         }
 
@@ -100,7 +100,7 @@ namespace ToastNotifications
         private void Notification_FormClosed(object sender, FormClosedEventArgs e)
         {
             // Move down any open forms above this one
-            foreach (Notification openForm in openNotifications)
+            foreach (Notification openForm in OpenNotifications)
             {
                 if (openForm == this)
                 {
@@ -110,7 +110,7 @@ namespace ToastNotifications
                 openForm.Top += Height;
             }
 
-            openNotifications.Remove(this);
+            OpenNotifications.Remove(this);
         }
 
         private void lifeTimer_Tick(object sender, EventArgs e)

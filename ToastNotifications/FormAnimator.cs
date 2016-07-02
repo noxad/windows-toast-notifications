@@ -97,7 +97,7 @@ namespace ToastNotifications
         /// <summary>
         /// The form to be animated
         /// </summary>
-        private Form _form;
+        private readonly Form _form;
         /// <summary>
         /// The animation method used to show and hide the form
         /// </summary>
