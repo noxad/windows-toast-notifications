@@ -3,7 +3,7 @@ Windows Toast Notifications
 
 C# demo project for easily creating toast-style notifications in a Windows application. 
 
-Original modified and cleaned up version of code mentioned in Attribution section below was for use in [EDGE Shop Flag Notifier](http://www.mpiworldclass.com/customer-center/beta-widgets.aspx).
+Original modified and cleaned up version of code mentioned in Attribution section below was for use in [EDGE Shop Flag Notifier](http://www.autopoint.com/helpdesk) (click on Add-Ons tab).
 
 Features
 ---------------------
