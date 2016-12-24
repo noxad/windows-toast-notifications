@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using ToastNotifications.Extensions;
 
 namespace ToastNotifications
 {
@@ -70,7 +71,13 @@ namespace ToastNotifications
             // Move each open form upwards to make room for this one
             foreach (Notification openForm in OpenNotifications)
             {
-                openForm.Top -= Height;
+                openForm.SetPropertyThreadSafe(() => openForm.Top, openForm.Top - Height);
+                /* Notice! The line below changed by me (aleksandresukhitashvili@gmail.com)
+                 *  with the line above because it threw 
+                 *  an exception when I created another 
+                 *  notification from different thread
+                 */
+                //openForm.Top -= Height;
             }
 
             OpenNotifications.Add(this);
