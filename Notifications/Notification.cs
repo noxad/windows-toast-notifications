@@ -12,6 +12,7 @@ namespace ToastNotifications
 {
     public partial class Notification : Form
     {
+        public event EventHandler<NotificationClickedEventArgs> OnNotificationClicked;
         static readonly List<Notification> OpenNotifications = new List<Notification>();
         bool _allowFocus;
         readonly FormAnimator _animator;
@@ -40,7 +41,7 @@ namespace ToastNotifications
             if (body.Length > 100)
                 labelBody.Font = SmallFont;
             labelBody.Text = body;
-            
+
 
             _animator = new FormAnimator(this, animation, direction, 500);
 
@@ -137,14 +138,36 @@ namespace ToastNotifications
 
         void labelTitle_Click(object sender, EventArgs e)
         {
+            InvokeClicked();
             Close();
         }
 
         void labelRO_Click(object sender, EventArgs e)
         {
+            InvokeClicked();
             Close();
         }
 
+        void InvokeClicked()
+        {
+            OnNotificationClicked?.Invoke(this,
+                new NotificationClickedEventArgs()
+                {
+                    Content = new NotificationContentStruct() { Body = this.labelBody.Text, Title = this.labelTitle.Text }
+                });
+        }
+
         #endregion // Event Handlers
+    }
+
+    public class NotificationClickedEventArgs : EventArgs
+    {
+        public NotificationContentStruct Content { get; set; }
+    }
+
+    public class NotificationContentStruct
+    {
+        public string Title { get; set; }
+        public string Body { get; set; }
     }
 }
