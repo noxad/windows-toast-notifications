@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToastNotifications", "Toast
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notifications", "Notifications\Notifications.csproj", "{E738C3BB-DD75-4686-B38A-E448BB5D8B61}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToastNotificationConsole", "ToastNotificationConsole\ToastNotificationConsole.csproj", "{F2DD3BCE-2EFB-4F06-909C-A60F47FA49AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,14 @@ Global
 		{E738C3BB-DD75-4686-B38A-E448BB5D8B61}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E738C3BB-DD75-4686-B38A-E448BB5D8B61}.Release|x86.ActiveCfg = Release|Any CPU
 		{E738C3BB-DD75-4686-B38A-E448BB5D8B61}.Release|x86.Build.0 = Release|Any CPU
+		{F2DD3BCE-2EFB-4F06-909C-A60F47FA49AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2DD3BCE-2EFB-4F06-909C-A60F47FA49AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2DD3BCE-2EFB-4F06-909C-A60F47FA49AA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F2DD3BCE-2EFB-4F06-909C-A60F47FA49AA}.Debug|x86.Build.0 = Debug|Any CPU
+		{F2DD3BCE-2EFB-4F06-909C-A60F47FA49AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2DD3BCE-2EFB-4F06-909C-A60F47FA49AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2DD3BCE-2EFB-4F06-909C-A60F47FA49AA}.Release|x86.ActiveCfg = Release|Any CPU
+		{F2DD3BCE-2EFB-4F06-909C-A60F47FA49AA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

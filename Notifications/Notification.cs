@@ -6,6 +6,7 @@ using Notifications.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Notifications
@@ -62,6 +63,18 @@ namespace Notifications
             _currentForegroundWindow = NativeMethods.GetForegroundWindow();
 
             base.Show();
+        }
+
+        public Thread ShowInNewThread()
+        {
+            var thread = new Thread(() =>
+            {
+                System.Windows.Forms.Application.Run(this);
+            })
+            { IsBackground = false };
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            return thread;
         }
 
         #endregion // Methods
