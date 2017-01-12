@@ -1,6 +1,7 @@
 // =====COPYRIGHT=====
 // Code originally retrieved from http://www.vbforums.com/showthread.php?t=547778 - no license information supplied
 // =====COPYRIGHT=====
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,11 +12,12 @@ namespace ToastNotifications
 {
     public partial class Notification : Form
     {
-        private static readonly List<Notification> OpenNotifications = new List<Notification>();
-        private bool _allowFocus;
-        private readonly FormAnimator _animator;
-        private IntPtr _currentForegroundWindow;
-
+        static readonly List<Notification> OpenNotifications = new List<Notification>();
+        bool _allowFocus;
+        readonly FormAnimator _animator;
+        IntPtr _currentForegroundWindow;
+        static readonly Font SmallFont = new Font("Calibri", 8, FontStyle.Regular, GraphicsUnit.Point, 0);
+        static readonly Font DefaultFont = new Font("Calibri", 11.25F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
         /// <summary>
         /// 
         /// </summary>
@@ -35,7 +37,10 @@ namespace ToastNotifications
 
             lifeTimer.Interval = duration;
             labelTitle.Text = title;
+            if (body.Length > 100)
+                labelBody.Font = SmallFont;
             labelBody.Text = body;
+            
 
             _animator = new FormAnimator(this, animation, direction, 500);
 
@@ -62,7 +67,7 @@ namespace ToastNotifications
 
         #region Event Handlers
 
-        private void Notification_Load(object sender, EventArgs e)
+        void Notification_Load(object sender, EventArgs e)
         {
             // Display the form just above the system tray.
             Location = new Point(Screen.PrimaryScreen.WorkingArea.Width - Width,
@@ -84,7 +89,7 @@ namespace ToastNotifications
             lifeTimer.Start();
         }
 
-        private void Notification_Activated(object sender, EventArgs e)
+        void Notification_Activated(object sender, EventArgs e)
         {
             // Prevent the form taking focus when it is initially shown
             if (!_allowFocus)
@@ -94,7 +99,7 @@ namespace ToastNotifications
             }
         }
 
-        private void Notification_Shown(object sender, EventArgs e)
+        void Notification_Shown(object sender, EventArgs e)
         {
             // Once the animation has completed the form can receive focus
             _allowFocus = true;
@@ -104,7 +109,7 @@ namespace ToastNotifications
             _animator.Direction = FormAnimator.AnimationDirection.Down;
         }
 
-        private void Notification_FormClosed(object sender, FormClosedEventArgs e)
+        void Notification_FormClosed(object sender, FormClosedEventArgs e)
         {
             // Move down any open forms above this one
             foreach (Notification openForm in OpenNotifications)
@@ -120,22 +125,22 @@ namespace ToastNotifications
             OpenNotifications.Remove(this);
         }
 
-        private void lifeTimer_Tick(object sender, EventArgs e)
+        void lifeTimer_Tick(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void Notification_Click(object sender, EventArgs e)
+        void Notification_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void labelTitle_Click(object sender, EventArgs e)
+        void labelTitle_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void labelRO_Click(object sender, EventArgs e)
+        void labelRO_Click(object sender, EventArgs e)
         {
             Close();
         }
