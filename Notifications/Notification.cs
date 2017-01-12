@@ -13,7 +13,8 @@ namespace Notifications
 {
     public partial class Notification : Form
     {
-        public event EventHandler<NotificationClickedEventArgs> OnNotificationClicked;
+        //public event EventHandler<EventArgs> OnNotificationClicked;
+        Form _extendedViewForm;
         static readonly List<Notification> OpenNotifications = new List<Notification>();
         bool _allowFocus;
         readonly FormAnimator _animator;
@@ -28,8 +29,9 @@ namespace Notifications
         /// <param name="duration"></param>
         /// <param name="animation"></param>
         /// <param name="direction"></param>
-        public Notification(string title, string body, int duration, FormAnimator.AnimationMethod animation, FormAnimator.AnimationDirection direction)
+        public Notification(string title, string body, int duration, FormAnimator.AnimationMethod animation, FormAnimator.AnimationDirection direction, Form extendedViewForm = null)
         {
+            _extendedViewForm = extendedViewForm;
             InitializeComponent();
 
             if (duration < 0)
@@ -65,7 +67,7 @@ namespace Notifications
             base.Show();
         }
 
-        public Thread ShowInNewThread()
+        public void ShowInSeparateThread()
         {
             var thread = new Thread(() =>
             {
@@ -74,7 +76,7 @@ namespace Notifications
             { IsBackground = false };
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
-            return thread;
+            thread.Join();
         }
 
         #endregion // Methods
@@ -163,24 +165,13 @@ namespace Notifications
 
         void InvokeClicked()
         {
-            OnNotificationClicked?.Invoke(this,
-                new NotificationClickedEventArgs()
-                {
-                    Content = new NotificationContentStruct() { Body = this.labelBody.Text, Title = this.labelTitle.Text }
-                });
+            _extendedViewForm?.ShowDialog(this);
         }
 
         #endregion // Event Handlers
     }
 
-    public class NotificationClickedEventArgs : EventArgs
-    {
-        public NotificationContentStruct Content { get; set; }
-    }
 
-    public class NotificationContentStruct
-    {
-        public string Title { get; set; }
-        public string Body { get; set; }
-    }
+
+
 }
