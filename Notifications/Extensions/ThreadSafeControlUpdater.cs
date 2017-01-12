@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace ToastNotifications.Extensions
+namespace Notifications.Extensions
 {
     /// <summary>
     /// Extension class which adds support for windows forms controls to be updated from different threads

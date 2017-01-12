@@ -2,13 +2,13 @@
 // Code originally retrieved from http://www.vbforums.com/showthread.php?t=547778 - no license information supplied
 // =====COPYRIGHT=====
 
+using Notifications.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using ToastNotifications.Extensions;
 
-namespace ToastNotifications
+namespace Notifications
 {
     public partial class Notification : Form
     {
