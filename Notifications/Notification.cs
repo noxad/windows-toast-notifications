@@ -66,7 +66,9 @@ namespace Notifications
 
             base.Show();
         }
-
+        /// <summary>
+        /// For safe usage form non windows forms application
+        /// </summary>
         public void ShowFromManager()
         {
             NotificationManager.Show(this);
