@@ -6,7 +6,6 @@ using Notifications.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace Notifications
@@ -14,6 +13,7 @@ namespace Notifications
     public partial class Notification : Form
     {
         //public event EventHandler<EventArgs> OnNotificationClicked;
+        static readonly NotificationManager NotificationManager;
         Form _extendedViewForm;
         static readonly List<Notification> OpenNotifications = new List<Notification>();
         bool _allowFocus;
@@ -67,17 +67,28 @@ namespace Notifications
             base.Show();
         }
 
-        public void ShowInSeparateThread()
+        public void ShowFromManager()
         {
-            var thread = new Thread(() =>
-            {
-                System.Windows.Forms.Application.Run(this);
-            })
-            { IsBackground = false };
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-            thread.Join();
+            NotificationManager.Show(this);
         }
+
+        //static bool runningAlready = false;
+        //public void ShowInSeparateThread()
+        //{
+        //    var thread = new Thread(() =>
+        //    {
+        //        if (!runningAlready)
+        //            System.Windows.Forms.Application.Run(this);
+        //        else
+        //        {
+        //            this.Show();
+        //        }
+        //    })
+        //    { IsBackground = false };
+        //    thread.SetApartmentState(ApartmentState.STA);
+        //    thread.Start();
+        //    thread.Join();
+        //}
 
         #endregion // Methods
 
@@ -170,8 +181,4 @@ namespace Notifications
 
         #endregion // Event Handlers
     }
-
-
-
-
 }
