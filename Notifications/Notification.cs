@@ -76,14 +76,6 @@ namespace Notifications
         {
             NotificationManager.Show(this);
         }
-        /// <summary>
-        /// Blocks current thread until the notification form closes (usable when you want to show only one notification at a time)
-        /// </summary>
-        public void WaitClose()
-        {
-            ClosingEvent.WaitOne();
-            ClosingEvent.Reset();
-        }
 
         //static bool runningAlready = false;
         //public void ShowInSeparateThread()
