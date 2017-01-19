@@ -6,12 +6,14 @@ using Notifications.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Notifications
 {
     public partial class Notification : Form
     {
+        public ManualResetEvent ClosingEvent = new ManualResetEvent(false);
         //public event EventHandler<EventArgs> OnNotificationClicked;
         static readonly NotificationManager NotificationManager;
         Form _extendedViewForm;
@@ -49,6 +51,7 @@ namespace Notifications
             _animator = new FormAnimator(this, animation, direction, 500);
 
             Region = Region.FromHrgn(NativeMethods.CreateRoundRectRgn(0, 0, Width - 5, Height - 5, 20, 20));
+            this.FormClosed += (sender, args) => ClosingEvent.Set();
         }
 
         #region Methods
@@ -72,6 +75,14 @@ namespace Notifications
         public void ShowFromManager()
         {
             NotificationManager.Show(this);
+        }
+        /// <summary>
+        /// Blocks current thread until the notification form closes (usable when you want to show only one notification at a time)
+        /// </summary>
+        public void WaitClose()
+        {
+            ClosingEvent.WaitOne();
+            ClosingEvent.Reset();
         }
 
         //static bool runningAlready = false;
