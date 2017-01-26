@@ -45,14 +45,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FormAnimator.cs" />
-    <Compile Include="NativeMethods.cs" />
-    <Compile Include="Notification.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Notification.designer.cs">
-      <DependentUpon>Notification.cs</DependentUpon>
-    </Compile>
     <Compile Include="NotificationLauncher.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -61,9 +53,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Notification.resx">
-      <DependentUpon>Notification.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="NotificationLauncher.resx">
       <DependentUpon>NotificationLauncher.cs</DependentUpon>
     </EmbeddedResource>
@@ -111,6 +100,12 @@
     <Content Include="Sounds\sonata.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Notifications\Notifications.csproj">
+      <Project>{e738c3bb-dd75-4686-b38a-e448bb5d8b61}</Project>
+      <Name>Notifications</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

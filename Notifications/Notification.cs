@@ -1,20 +1,28 @@
 // =====COPYRIGHT=====
 // Code originally retrieved from http://www.vbforums.com/showthread.php?t=547778 - no license information supplied
 // =====COPYRIGHT=====
+
+using Notifications.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 
-namespace ToastNotifications
+namespace Notifications
 {
     public partial class Notification : Form
     {
-        private static readonly List<Notification> OpenNotifications = new List<Notification>();
-        private bool _allowFocus;
-        private readonly FormAnimator _animator;
-        private IntPtr _currentForegroundWindow;
-
+        public ManualResetEvent ClosingEvent = new ManualResetEvent(false);
+        //public event EventHandler<EventArgs> OnNotificationClicked;
+        static readonly NotificationManager NotificationManager;
+        Form _extendedViewForm;
+        static readonly List<Notification> OpenNotifications = new List<Notification>();
+        bool _allowFocus;
+        readonly FormAnimator _animator;
+        IntPtr _currentForegroundWindow;
+        static readonly Font SmallFont = new Font("Calibri", 8, FontStyle.Regular, GraphicsUnit.Point, 0);
+        static readonly Font DefaultFont = new Font("Calibri", 11.25F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
         /// <summary>
         /// 
         /// </summary>
@@ -23,8 +31,9 @@ namespace ToastNotifications
         /// <param name="duration"></param>
         /// <param name="animation"></param>
         /// <param name="direction"></param>
-        public Notification(string title, string body, int duration, FormAnimator.AnimationMethod animation, FormAnimator.AnimationDirection direction)
+        public Notification(string title, string body, int duration, FormAnimator.AnimationMethod animation, FormAnimator.AnimationDirection direction, Form extendedViewForm = null)
         {
+            _extendedViewForm = extendedViewForm;
             InitializeComponent();
 
             if (duration < 0)
@@ -34,11 +43,15 @@ namespace ToastNotifications
 
             lifeTimer.Interval = duration;
             labelTitle.Text = title;
+            if (body.Length > 100)
+                labelBody.Font = SmallFont;
             labelBody.Text = body;
+
 
             _animator = new FormAnimator(this, animation, direction, 500);
 
             Region = Region.FromHrgn(NativeMethods.CreateRoundRectRgn(0, 0, Width - 5, Height - 5, 20, 20));
+            this.FormClosed += (sender, args) => ClosingEvent.Set();
         }
 
         #region Methods
@@ -56,12 +69,37 @@ namespace ToastNotifications
 
             base.Show();
         }
+        /// <summary>
+        /// For safe usage form non windows forms application
+        /// </summary>
+        public void ShowFromManager()
+        {
+            NotificationManager.Show(this);
+        }
+
+        //static bool runningAlready = false;
+        //public void ShowInSeparateThread()
+        //{
+        //    var thread = new Thread(() =>
+        //    {
+        //        if (!runningAlready)
+        //            System.Windows.Forms.Application.Run(this);
+        //        else
+        //        {
+        //            this.Show();
+        //        }
+        //    })
+        //    { IsBackground = false };
+        //    thread.SetApartmentState(ApartmentState.STA);
+        //    thread.Start();
+        //    thread.Join();
+        //}
 
         #endregion // Methods
 
         #region Event Handlers
 
-        private void Notification_Load(object sender, EventArgs e)
+        void Notification_Load(object sender, EventArgs e)
         {
             // Display the form just above the system tray.
             Location = new Point(Screen.PrimaryScreen.WorkingArea.Width - Width,
@@ -70,14 +108,20 @@ namespace ToastNotifications
             // Move each open form upwards to make room for this one
             foreach (Notification openForm in OpenNotifications)
             {
-                openForm.Top -= Height;
+                openForm.SetPropertyThreadSafe(() => openForm.Top, openForm.Top - Height);
+                /* Notice! The line below changed by me (aleksandresukhitashvili@gmail.com)
+                 *  with the line above because it threw 
+                 *  an exception when I created another 
+                 *  notification from different thread
+                 */
+                //openForm.Top -= Height;
             }
 
             OpenNotifications.Add(this);
             lifeTimer.Start();
         }
 
-        private void Notification_Activated(object sender, EventArgs e)
+        void Notification_Activated(object sender, EventArgs e)
         {
             // Prevent the form taking focus when it is initially shown
             if (!_allowFocus)
@@ -87,7 +131,7 @@ namespace ToastNotifications
             }
         }
 
-        private void Notification_Shown(object sender, EventArgs e)
+        void Notification_Shown(object sender, EventArgs e)
         {
             // Once the animation has completed the form can receive focus
             _allowFocus = true;
@@ -97,7 +141,7 @@ namespace ToastNotifications
             _animator.Direction = FormAnimator.AnimationDirection.Down;
         }
 
-        private void Notification_FormClosed(object sender, FormClosedEventArgs e)
+        void Notification_FormClosed(object sender, FormClosedEventArgs e)
         {
             // Move down any open forms above this one
             foreach (Notification openForm in OpenNotifications)
@@ -113,24 +157,32 @@ namespace ToastNotifications
             OpenNotifications.Remove(this);
         }
 
-        private void lifeTimer_Tick(object sender, EventArgs e)
+        void lifeTimer_Tick(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void Notification_Click(object sender, EventArgs e)
+        void Notification_Click(object sender, EventArgs e)
         {
+            Close();
+            InvokeClicked();
+        }
+
+        void labelTitle_Click(object sender, EventArgs e)
+        {
+            InvokeClicked();
             Close();
         }
 
-        private void labelTitle_Click(object sender, EventArgs e)
+        void labelRO_Click(object sender, EventArgs e)
         {
+            InvokeClicked();
             Close();
         }
 
-        private void labelRO_Click(object sender, EventArgs e)
+        void InvokeClicked()
         {
-            Close();
+            _extendedViewForm?.ShowDialog(this);
         }
 
         #endregion // Event Handlers

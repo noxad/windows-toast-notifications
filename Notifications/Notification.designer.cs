@@ -1,4 +1,4 @@
-namespace ToastNotifications
+namespace Notifications
 {
     partial class Notification
     {
