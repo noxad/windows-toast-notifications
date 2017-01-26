@@ -165,6 +165,7 @@ namespace Notifications
         void Notification_Click(object sender, EventArgs e)
         {
             Close();
+            InvokeClicked();
         }
 
         void labelTitle_Click(object sender, EventArgs e)
